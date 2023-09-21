@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:task_manager/core/services/auth/auth_service.dart';
 import 'package:task_manager/core/utils/colors.dart';
 import 'package:task_manager/state/user_state.dart';
 
@@ -16,6 +17,12 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late final state = User.of(context);
+    late final auth = AuthService();
+    try {
+      auth.signInAnonymously().then((resp) {
+        debugPrint(resp.user?.uid);
+      });
+    } catch (e) {}
     return Scaffold(
       backgroundColor: AppColors.p1,
       floatingActionButton: AddTaskButton(
