@@ -16,7 +16,7 @@ dependencies:
   flutter_mobx: ^2.0.6+5
   flutter_screenutil: ^5.9.0
   google_fonts: ^6.0.0
-  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   json_annotation: ^4.8.1
   json_serializable: ^6.7.1
   logging: ^1.2.0
