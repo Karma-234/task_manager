@@ -1,7 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
 class AppLocalStorage {
-  static initFlutter() async {
+  static Future initFlutter() async {
     await Hive.initFlutter();
     Hive.openBox('task.manger');
   }

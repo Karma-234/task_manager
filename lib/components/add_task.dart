@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:task_manager/core/models/payload/add_todo.dart';
+import 'package:task_manager/state/todo_state.dart';
 import '../core/theme/text_styles.dart';
 import '../core/utils/colors.dart';
 import '../shared_widgets/app_input_field.dart';
 import '../shared_widgets/buttons/primary_button.dart';
 
 class AddTaskBody extends StatelessWidget {
+  final TodoState? state;
+  final Function(AddTodoPayload)? onSubmit;
   const AddTaskBody({
     super.key,
+    this.state,
+    this.onSubmit,
   });
 
   @override
@@ -38,21 +43,29 @@ class AddTaskBody extends StatelessWidget {
                 style: AppTextstyles.large(),
               ),
               16.verticalSpace,
-              const AppInputField(
+              AppInputField(
                 hint: 'Enter title',
                 labeltext: 'Title',
+                onChanged: (p0) => state?.setTitle(p0),
               ),
               16.verticalSpace,
-              const AppInputField(
+              AppInputField(
                 hint: 'Enter description',
                 labeltext: 'Description',
+                onChanged: (p0) => state?.setDescription(p0),
               ),
               24.verticalSpace,
-              const Align(
+              Align(
                 child: AppPrimaryButton(
                   buttonWidth: 100,
                   buttonHeight: 43,
                   text: 'Add task',
+                  onPress: () {
+                    onSubmit!(AddTodoPayload(
+                        done: false,
+                        description: state?.description ?? '',
+                        title: state?.title ?? ''));
+                  },
                 ),
               )
             ],

@@ -19,11 +19,13 @@ class User extends StatefulWidget {
   final Widget child;
   final String userName;
   final String password;
+  final String? uid;
   const User({
     super.key,
     required this.child,
     this.password = '',
     this.userName = '',
+    this.uid,
   });
 
   static UserState of(BuildContext context) {
@@ -37,6 +39,7 @@ class User extends StatefulWidget {
 class UserState extends State<User> {
   String userName = '';
   String password = '';
+  String? uid;
   bool shouldNotify = false;
 
   setUserName(String entry) {
@@ -48,6 +51,12 @@ class UserState extends State<User> {
   setPassword(String entry) {
     setState(() {
       password = entry;
+    });
+  }
+
+  setUid(String? entry) {
+    setState(() {
+      uid = entry;
     });
   }
 

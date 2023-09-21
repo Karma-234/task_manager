@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_manager/components/login_form.dart';
 import 'package:task_manager/core/routes/app_router.gr.dart';
+import 'package:task_manager/core/services/auth/auth_service.dart';
 import 'package:task_manager/core/theme/text_styles.dart';
 import 'package:task_manager/core/utils/colors.dart';
 import 'package:task_manager/shared_widgets/app_modal.dart';
+import 'package:task_manager/shared_widgets/app_snackbar.dart';
 import 'package:task_manager/shared_widgets/buttons/primary_button.dart';
 
 import '../state/user_state.dart';
@@ -92,14 +94,22 @@ class _LoginScreenState extends State<LoginScreen>
             24.verticalSpace,
             AppPrimaryButton(
               text: 'Login',
-              onPress: () {
+              onPress: () async {
                 if (formKey.currentState?.validate() ?? false) {
-                  appModal(
-                    context,
-                    onPress: () => context.router.pushAndPopUntil(
-                        const HomeRoute(),
-                        predicate: (route) => false),
-                  );
+                  try {
+                    late final auth = AuthService();
+                    auth.signInAnonymously().then((value) {
+                      state.setUid(value.user?.uid);
+                      appModal(
+                        context,
+                        onPress: () => context.router.pushAndPopUntil(
+                            const HomeRoute(),
+                            predicate: (route) => false),
+                      );
+                    });
+                  } catch (e) {
+                    appSnackBar(context, tetx: e.toString());
+                  }
                 } else {
                   return;
                 }
