@@ -8,7 +8,9 @@ environment:
 
 dependencies:
   auto_route: ^7.8.3
+  cloud_firestore: ^4.9.2
   firebase_auth: ^4.10.0
+  firebase_core: ^2.16.0
   flutter:
     sdk: flutter
   flutter_mobx: ^2.0.6+5
