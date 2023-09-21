@@ -7,8 +7,19 @@ import 'buttons/task_action.dart';
 import 'container/gradient_container.dart';
 
 class TodoCard extends StatelessWidget {
+  final VoidCallback? markDone;
+  final VoidCallback? delete;
+  final String? title;
+  final String? description;
+  final bool isDone;
+
   const TodoCard({
     super.key,
+    this.markDone,
+    this.delete,
+    this.title,
+    this.description,
+    this.isDone = false,
   });
 
   @override
@@ -26,16 +37,17 @@ class TodoCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Title gfufhcvhgcjhgfjhghgjhgfhffhhhggvgg',
+                  title ?? 'No title',
                   style: AppTextstyles.large(),
                 ),
               ),
               16.verticalSpace,
-              Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 24.sp,
-              )
+              if (isDone)
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 24.sp,
+                )
             ],
           ),
           16.verticalSpace,
@@ -43,18 +55,23 @@ class TodoCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Desc',
+                  description ?? 'No description',
                   style: AppTextstyles.bodyLarge(),
                 ),
               ),
               // const Spacer(),
               26.horizontalSpace,
-              const TaskAction(
-                text: 'Done',
-                color: Colors.greenAccent,
-              ),
-              26.horizontalSpace,
-              const TaskAction(),
+              if (!isDone) ...[
+                TaskAction(
+                  text: 'Done',
+                  color: Colors.greenAccent,
+                  onPress: markDone,
+                ),
+                26.horizontalSpace,
+                TaskAction(
+                  onPress: delete,
+                ),
+              ],
             ],
           ),
         ],

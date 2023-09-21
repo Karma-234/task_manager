@@ -3,8 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:task_manager/core/depedencies/setup.dart';
+import 'package:task_manager/core/models/response/todo_response.dart';
 import 'package:task_manager/core/services/storage/storage_service.dart';
+import 'package:task_manager/core/theme/text_styles.dart';
 import 'package:task_manager/core/utils/colors.dart';
+import 'package:task_manager/core/utils/extensions.dart';
 import 'package:task_manager/state/user_state.dart';
 
 import '../components/add_task.dart';
@@ -21,6 +25,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late final state = User.of(context);
+    late final storageService = StorageService();
     late final mobx.ObservableStream<DocumentSnapshot<Map<String, dynamic>>>
         getTodos =
         mobx.ObservableStream<DocumentSnapshot<Map<String, dynamic>>>(
@@ -34,9 +39,10 @@ class HomeScreen extends StatelessWidget {
             context: context,
             barrierDismissible: false,
             builder: (context) => AddTaskBody(
+              state: locator(),
               onSubmit: (v) {
                 try {
-                  StorageService()
+                  storageService
                       .addTodo(uid: User.of(context).uid ?? '', payload: v)
                       .then((value) {
                     context.popRoute();
@@ -61,18 +67,43 @@ class HomeScreen extends StatelessWidget {
             12.verticalSpace,
             Observer(
               builder: (context) {
-                debugPrint(getTodos.value?.data().toString());
-                if (getTodos.data == null || getTodos.value == null) {
-                  return const Center(
-                    child: Text('No task yet!'),
-                  );
-                }
+                // debugPrint(getTodos.value.toString());
+
                 if (getTodos.hasError) {
                   return const Center(
                     child: Text('Error getting tasks!'),
                   );
                 }
-                return const TodoCard();
+                final list = TodoResponse(
+                    todos: ((getTodos.value?.data()?['tasks'] ?? []) as List)
+                        .map((e) => Todo.fromJson(e))
+                        .toList());
+                if (list.todos.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No task yet!',
+                      style: AppTextstyles.large(),
+                    ),
+                  );
+                }
+                return Expanded(
+                  child: SingleChildScrollView(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: List.generate(
+                      list.todos.length,
+                      (i) => TodoCard(
+                        title: list.todos[i].title,
+                        description: list.todos[i].description,
+                        isDone: list.todos[i].done ?? false,
+                        markDone: () => storageService.updateTodo(
+                            payload: list, uid: state.uid ?? '', index: i),
+                        delete: () => storageService.deleteTodo(
+                            payload: list.todos[i], uid: state.uid ?? ''),
+                      ),
+                    ).separateWith(12.verticalSpace),
+                  )),
+                );
               },
             )
           ],

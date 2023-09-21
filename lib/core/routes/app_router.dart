@@ -8,10 +8,12 @@ class AppRouter extends $AppRouter {
   List<AutoRoute> get routes => [
         AutoRoute(
           page: LoginRoute.page,
+          initial: true,
         ),
         CustomRoute(
-            page: HomeRoute.page,
-            transitionsBuilder: TransitionsBuilders.fadeIn,
-            initial: true),
+          page: HomeRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+          // initial: true,
+        ),
       ];
 }
