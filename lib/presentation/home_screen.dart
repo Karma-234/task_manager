@@ -28,12 +28,13 @@ class HomeScreen extends StatelessWidget {
     final getTodos =
         mobx.ObservableStream<DocumentSnapshot<Map<String, dynamic>>>(
             storageService.getTodo(uid: state.uid));
+    final formKey = GlobalKey<FormState>();
 
     return Scaffold(
       backgroundColor: AppColors.p1,
       floatingActionButton: AddTaskButton(
         onPress: () {
-          taskAdder(context, storageService);
+          taskAdder(context, storageService, formKey);
         },
       ),
       body: SafeArea(
@@ -100,32 +101,37 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Future<dynamic> taskAdder(
-      BuildContext context, StorageService storageService) {
+  Future<dynamic> taskAdder(BuildContext context, StorageService storageService,
+      GlobalKey<FormState> formKey) {
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AddTaskBody(
         state: locator(),
         onSubmit: (v) {
-          try {
-            User.of(context).setLoading(true);
-            storageService
-                .addTodo(
-              uid: User.of(context).uid ?? '',
-              payload: v,
-              onError: (e) => appSnackBar(context, tetx: e),
-            )
-                .then((value) {
+          if (formKey.currentState?.validate() ?? false) {
+            try {
+              User.of(context).setLoading(true);
+              storageService
+                  .addTodo(
+                uid: User.of(context).uid ?? '',
+                payload: v,
+                onError: (e) => appSnackBar(context, tetx: e),
+              )
+                  .then((value) {
+                User.of(context).setLoading(false);
+                context.popRoute();
+                appSnackBar(context, tetx: 'Todo added successfully!');
+              });
+            } catch (e) {
               User.of(context).setLoading(false);
-              context.popRoute();
-              appSnackBar(context, tetx: 'Todo added successfully!');
-            });
-          } catch (e) {
-            User.of(context).setLoading(false);
-            appSnackBar(context, tetx: e.toString());
+              appSnackBar(context, tetx: e.toString());
+            }
+          } else {
+            return;
           }
         },
+        formKey: formKey,
       ),
     );
   }
