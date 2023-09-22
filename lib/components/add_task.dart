@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_manager/core/models/payload/add_todo.dart';
@@ -9,11 +10,13 @@ import '../shared_widgets/buttons/primary_button.dart';
 
 class AddTaskBody extends StatelessWidget {
   final TodoState? state;
+  final bool isLoading;
   final Function(AddTodoPayload)? onSubmit;
   const AddTaskBody({
     super.key,
     this.state,
     this.onSubmit,
+    this.isLoading = false,
   });
 
   @override
@@ -56,17 +59,22 @@ class AddTaskBody extends StatelessWidget {
               ),
               24.verticalSpace,
               Align(
-                child: AppPrimaryButton(
-                  buttonWidth: 100,
-                  buttonHeight: 43,
-                  text: 'Add task',
-                  onPress: () {
-                    onSubmit!(AddTodoPayload(
-                        done: false,
-                        description: state?.description ?? '',
-                        title: state?.title ?? ''));
-                  },
-                ),
+                child: isLoading
+                    ? CupertinoActivityIndicator(
+                        color: AppColors.p3,
+                        radius: 30.r,
+                      )
+                    : AppPrimaryButton(
+                        buttonWidth: 100,
+                        buttonHeight: 43,
+                        text: 'Add task',
+                        onPress: () {
+                          onSubmit!(AddTodoPayload(
+                              done: false,
+                              description: state?.description ?? '',
+                              title: state?.title ?? ''));
+                        },
+                      ),
               )
             ],
           ),

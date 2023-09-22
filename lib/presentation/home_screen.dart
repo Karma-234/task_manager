@@ -8,7 +8,6 @@ import 'package:task_manager/core/models/response/todo_response.dart';
 import 'package:task_manager/core/services/storage/storage_service.dart';
 import 'package:task_manager/core/theme/text_styles.dart';
 import 'package:task_manager/core/utils/colors.dart';
-import 'package:task_manager/core/utils/extensions.dart';
 import 'package:task_manager/state/user_state.dart';
 
 import '../components/add_task.dart';
@@ -24,36 +23,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    late final state = User.of(context);
-    late final storageService = StorageService();
-    late final mobx.ObservableStream<DocumentSnapshot<Map<String, dynamic>>>
-        getTodos =
+    final state = User.of(context);
+    final storageService = StorageService();
+    final getTodos =
         mobx.ObservableStream<DocumentSnapshot<Map<String, dynamic>>>(
-            StorageService().getTodo(uid: state.uid));
+            storageService.getTodo(uid: state.uid));
 
     return Scaffold(
       backgroundColor: AppColors.p1,
       floatingActionButton: AddTaskButton(
         onPress: () {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => AddTaskBody(
-              state: locator(),
-              onSubmit: (v) {
-                try {
-                  storageService
-                      .addTodo(uid: User.of(context).uid ?? '', payload: v)
-                      .then((value) {
-                    context.popRoute();
-                    appSnackBar(context, tetx: 'Todo added successfully!');
-                  });
-                } catch (e) {
-                  appSnackBar(context, tetx: e.toString());
-                }
-              },
-            ),
-          );
+          taskAdder(context, storageService);
         },
       ),
       body: SafeArea(
@@ -67,17 +47,19 @@ class HomeScreen extends StatelessWidget {
             12.verticalSpace,
             Observer(
               builder: (context) {
-                // debugPrint(getTodos.value.toString());
-
-                if (getTodos.hasError) {
-                  return const Center(
-                    child: Text('Error getting tasks!'),
-                  );
-                }
                 final list = TodoResponse(
                     todos: ((getTodos.value?.data()?['tasks'] ?? []) as List)
                         .map((e) => Todo.fromJson(e))
                         .toList());
+
+                if (getTodos.hasError) {
+                  return Center(
+                    child: Text(
+                      'Error getting tasks!',
+                      style: AppTextstyles.large(),
+                    ),
+                  );
+                }
                 if (list.todos.isEmpty) {
                   return Center(
                     child: Text(
@@ -87,27 +69,63 @@ class HomeScreen extends StatelessWidget {
                   );
                 }
                 return Expanded(
-                  child: SingleChildScrollView(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: List.generate(
-                      list.todos.length,
-                      (i) => TodoCard(
+                  child: ListView.separated(
+                    itemCount: list.todos.length,
+                    separatorBuilder: (context, index) => 12.verticalSpace,
+                    itemBuilder: (context, i) {
+                      return TodoCard(
                         title: list.todos[i].title,
                         description: list.todos[i].description,
                         isDone: list.todos[i].done ?? false,
                         markDone: () => storageService.updateTodo(
-                            payload: list, uid: state.uid ?? '', index: i),
+                          payload: list,
+                          uid: state.uid ?? '',
+                          index: i,
+                          onError: (e) => appSnackBar(context, tetx: e),
+                        ),
                         delete: () => storageService.deleteTodo(
-                            payload: list.todos[i], uid: state.uid ?? ''),
-                      ),
-                    ).separateWith(12.verticalSpace),
-                  )),
+                          payload: list.todos[i],
+                          uid: state.uid ?? '',
+                          onError: (e) => appSnackBar(context, tetx: e),
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Future<dynamic> taskAdder(
+      BuildContext context, StorageService storageService) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AddTaskBody(
+        state: locator(),
+        onSubmit: (v) {
+          try {
+            User.of(context).setLoading(true);
+            storageService
+                .addTodo(
+              uid: User.of(context).uid ?? '',
+              payload: v,
+              onError: (e) => appSnackBar(context, tetx: e),
+            )
+                .then((value) {
+              User.of(context).setLoading(false);
+              context.popRoute();
+              appSnackBar(context, tetx: 'Todo added successfully!');
+            });
+          } catch (e) {
+            User.of(context).setLoading(false);
+            appSnackBar(context, tetx: e.toString());
+          }
+        },
       ),
     );
   }

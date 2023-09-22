@@ -20,13 +20,14 @@ class User extends StatefulWidget {
   final String userName;
   final String password;
   final String? uid;
-  const User({
-    super.key,
-    required this.child,
-    this.password = '',
-    this.userName = '',
-    this.uid,
-  });
+  final bool isLoading;
+  const User(
+      {super.key,
+      required this.child,
+      this.password = '',
+      this.userName = '',
+      this.uid,
+      this.isLoading = false});
 
   static UserState of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<UserWidget>()!.data;
@@ -41,6 +42,7 @@ class UserState extends State<User> {
   String password = '';
   String? uid;
   bool shouldNotify = false;
+  bool isLoading = false;
 
   setUserName(String entry) {
     setState(() {
@@ -63,6 +65,12 @@ class UserState extends State<User> {
   shouldNotifyListeners() {
     setState(() {
       shouldNotify = true;
+    });
+  }
+
+  setLoading(bool entry) {
+    setState(() {
+      isLoading = entry;
     });
   }
 

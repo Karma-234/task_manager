@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_manager/components/login_form.dart';
@@ -92,32 +93,43 @@ class _LoginScreenState extends State<LoginScreen>
             26.verticalSpace,
             LoginForm(stateKey: formKey),
             24.verticalSpace,
-            AppPrimaryButton(
-              text: 'Login',
-              onPress: () async {
-                if (formKey.currentState?.validate() ?? false) {
-                  try {
-                    late final auth = AuthService();
-                    auth.signInAnonymously().then((value) {
-                      state.setUid(value.user?.uid);
-                      appModal(
-                        context,
-                        onPress: () => context.router.pushAndPopUntil(
-                            const HomeRoute(),
-                            predicate: (route) => false),
-                      );
-                    });
-                  } catch (e) {
-                    appSnackBar(context, tetx: e.toString());
-                  }
-                } else {
-                  return;
-                }
-              },
-            )
+            state.isLoading
+                ? CupertinoActivityIndicator(
+                    color: AppColors.p3,
+                    radius: 30.r,
+                  )
+                : AppPrimaryButton(
+                    text: 'Login',
+                    onPress: () {
+                      if (formKey.currentState?.validate() ?? false) {
+                        _performLogin(context);
+                      } else {
+                        return;
+                      }
+                    },
+                  )
           ],
         ),
       ),
     );
+  }
+
+  void _performLogin(BuildContext context) {
+    try {
+      state.setLoading(true);
+      late final auth = AuthService();
+      auth.signInAnonymously().then((value) {
+        state.setUid(value.user?.uid);
+        state.setLoading(false);
+        appModal(
+          context,
+          onPress: () => context.router
+              .pushAndPopUntil(const HomeRoute(), predicate: (route) => false),
+        );
+      });
+    } catch (e) {
+      state.setLoading(false);
+      appSnackBar(context, tetx: e.toString());
+    }
   }
 }

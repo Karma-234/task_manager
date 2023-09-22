@@ -1,4 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:task_manager/core/routes/app_router.gr.dart';
 
 import '../core/theme/text_styles.dart';
 import '../core/utils/colors.dart';
@@ -14,18 +17,38 @@ class HomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-        text: 'Hi\n',
-        children: [
-          TextSpan(
-            text: '${state.userName} 📝',
-            style: const TextStyle(color: AppColors.p3),
-          )
-        ],
-      ),
-      textAlign: TextAlign.center,
-      style: AppTextstyles.xLarge(fontSize: 34, textHeight: 39),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // const Spacer(),
+        20.horizontalSpace,
+        Expanded(
+          child: Text.rich(
+            TextSpan(
+              text: 'Hi\n',
+              children: [
+                TextSpan(
+                  text: '${state.userName} 📝',
+                  style: const TextStyle(color: AppColors.p3),
+                )
+              ],
+            ),
+            textAlign: TextAlign.center,
+            style: AppTextstyles.xLarge(fontSize: 34, textHeight: 39),
+          ),
+        ),
+        20.horizontalSpace,
+        IconButton(
+          onPressed: () => context.router.pushAndPopUntil(const LoginRoute(),
+              predicate: (route) => true, scopedPopUntil: true),
+          icon: Icon(
+            Icons.logout,
+            size: 30.sp,
+            color: Colors.red,
+          ),
+        )
+      ],
     );
   }
 }
