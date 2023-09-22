@@ -5,7 +5,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_manager/core/depedencies/setup.dart';
 import 'package:task_manager/core/services/storage/storage_service.dart';
-import 'package:task_manager/core/theme/text_styles.dart';
 import 'package:task_manager/core/utils/colors.dart';
 import 'package:task_manager/state/fetch_todo.dart';
 import 'package:task_manager/state/user_state.dart';
@@ -16,6 +15,8 @@ import '../components/todo_page_builder.dart';
 import '../shared_widgets/app_snackbar.dart';
 import '../shared_widgets/buttons/add_task.dart';
 import 'package:mobx/mobx.dart' as mobx;
+
+import '../shared_widgets/todo_information_widget.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
@@ -56,19 +57,11 @@ class HomeScreen extends StatelessWidget {
             Observer(
               builder: (context) {
                 if (getTodos.hasError) {
-                  return Center(
-                    child: Text(
-                      'Error getting tasks!',
-                      style: AppTextstyles.large(),
-                    ),
-                  );
+                  return const TodoInformationWidget();
                 }
                 if (list.todos.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'No task yet!',
-                      style: AppTextstyles.large(),
-                    ),
+                  return const TodoInformationWidget(
+                    text: 'No task yet!',
                   );
                 }
                 return TodoPageBuilder(
