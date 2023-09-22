@@ -33,20 +33,20 @@ class StorageService {
   }
 
   Future<void> updateTodo(
-      {required TodoResponse payload,
+      {required List<Todo> payload,
       required String uid,
       int index = 0,
       required Function(String) onError}) async {
     final newTodo = Todo(
-        title: payload.todos[index].title,
-        description: payload.todos[index].title,
-        createdAt: payload.todos[index].createdAt,
+        title: payload[index].title,
+        description: payload[index].title,
+        createdAt: payload[index].createdAt,
         done: true);
     try {
-      payload.todos.removeAt(index);
-      payload.todos.insert(index, newTodo);
+      payload.removeAt(index);
+      payload.insert(index, newTodo);
       collection.doc(uid).set(
-          {'tasks': payload.todos.map((e) => e.toJson()).toList()},
+          {'tasks': payload.map((e) => e.toJson()).toList()},
           SetOptions(merge: true));
     } catch (e) {
       onError(e.toString());

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_manager/core/depedencies/setup.dart';
-import 'package:task_manager/core/models/response/todo_response.dart';
 import 'package:task_manager/core/services/storage/storage_service.dart';
 import 'package:task_manager/core/theme/text_styles.dart';
 import 'package:task_manager/core/utils/colors.dart';
+import 'package:task_manager/state/fetch_todo.dart';
 import 'package:task_manager/state/user_state.dart';
 
 import '../components/add_task.dart';
@@ -25,9 +25,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = User.of(context);
     final storageService = StorageService();
+    final list = FetchTodoState();
     final getTodos =
         mobx.ObservableStream<DocumentSnapshot<Map<String, dynamic>>>(
             storageService.getTodo(uid: state.uid));
+    getTodos.listen((value) {
+      list.setTodo(value.data());
+    });
     final formKey = GlobalKey<FormState>();
 
     return Scaffold(
@@ -41,18 +45,16 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            HomeAppBar(state: state),
+            HomeAppBar(
+              state: state,
+              onLogout: () => getTodos.close(),
+            ),
             const Divider(
               color: Colors.grey,
             ),
             12.verticalSpace,
             Observer(
               builder: (context) {
-                final list = TodoResponse(
-                    todos: ((getTodos.value?.data()?['tasks'] ?? []) as List)
-                        .map((e) => Todo.fromJson(e))
-                        .toList());
-
                 if (getTodos.hasError) {
                   return Center(
                     child: Text(
@@ -79,7 +81,7 @@ class HomeScreen extends StatelessWidget {
                         description: list.todos[i].description,
                         isDone: list.todos[i].done ?? false,
                         markDone: () => storageService.updateTodo(
-                          payload: list,
+                          payload: list.todos,
                           uid: state.uid ?? '',
                           index: i,
                           onError: (e) => appSnackBar(context, tetx: e),

@@ -8,9 +8,11 @@ import '../core/utils/colors.dart';
 import '../state/user_state.dart';
 
 class HomeAppBar extends StatelessWidget {
+  final VoidCallback? onLogout;
   const HomeAppBar({
     super.key,
     required this.state,
+    this.onLogout,
   });
 
   final UserState state;
@@ -41,6 +43,7 @@ class HomeAppBar extends StatelessWidget {
         20.horizontalSpace,
         IconButton(
           onPressed: () {
+            onLogout!();
             final state = User.of(context);
             context.router.pushAndPopUntil(const LoginRoute(),
                 predicate: (route) => true, scopedPopUntil: true);
