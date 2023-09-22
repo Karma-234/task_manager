@@ -40,8 +40,13 @@ class HomeAppBar extends StatelessWidget {
         ),
         20.horizontalSpace,
         IconButton(
-          onPressed: () => context.router.pushAndPopUntil(const LoginRoute(),
-              predicate: (route) => true, scopedPopUntil: true),
+          onPressed: () {
+            final state = User.of(context);
+            context.router.pushAndPopUntil(const LoginRoute(),
+                predicate: (route) => true, scopedPopUntil: true);
+            state.setUserName('');
+            state.setPassword('');
+          },
           icon: Icon(
             Icons.logout,
             size: 30.sp,
