@@ -12,9 +12,9 @@ import 'package:task_manager/state/user_state.dart';
 
 import '../components/add_task.dart';
 import '../components/homw_app_bar.dart';
+import '../components/todo_page_builder.dart';
 import '../shared_widgets/app_snackbar.dart';
 import '../shared_widgets/buttons/add_task.dart';
-import '../shared_widgets/todo_card.dart';
 import 'package:mobx/mobx.dart' as mobx;
 
 @RoutePage()
@@ -71,29 +71,10 @@ class HomeScreen extends StatelessWidget {
                     ),
                   );
                 }
-                return Expanded(
-                  child: ListView.separated(
-                    itemCount: list.todos.length,
-                    separatorBuilder: (context, index) => 12.verticalSpace,
-                    itemBuilder: (context, i) {
-                      return TodoCard(
-                        title: list.todos[i].title,
-                        description: list.todos[i].description,
-                        isDone: list.todos[i].done ?? false,
-                        markDone: () => storageService.updateTodo(
-                          payload: list.todos,
-                          uid: state.uid ?? '',
-                          index: i,
-                          onError: (e) => appSnackBar(context, tetx: e),
-                        ),
-                        delete: () => storageService.deleteTodo(
-                          payload: list.todos[i],
-                          uid: state.uid ?? '',
-                          onError: (e) => appSnackBar(context, tetx: e),
-                        ),
-                      );
-                    },
-                  ),
+                return TodoPageBuilder(
+                  list: list,
+                  storageService: storageService,
+                  state: state,
                 );
               },
             )
