@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_manager/core/models/payload/add_todo.dart';
 import 'package:task_manager/state/todo_state.dart';
-import '../core/theme/text_styles.dart';
-import '../core/utils/colors.dart';
-import '../shared_widgets/app_input_field.dart';
-import '../shared_widgets/buttons/primary_button.dart';
+import '../../../core/theme/text_styles.dart';
+import '../../../core/utils/colors.dart';
+import '../../../shared_widgets/app_input_field.dart';
+import '../../../shared_widgets/buttons/primary_button.dart';
 
 class AddTaskBody extends StatelessWidget {
   final TodoState? state;

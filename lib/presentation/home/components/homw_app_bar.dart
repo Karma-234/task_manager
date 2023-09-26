@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_manager/core/routes/app_router.gr.dart';
 
-import '../core/theme/text_styles.dart';
-import '../core/utils/colors.dart';
-import '../state/user_state.dart';
+import '../../../core/theme/text_styles.dart';
+import '../../../core/utils/colors.dart';
+import '../../../state/user_state.dart';
 
 class HomeAppBar extends StatelessWidget {
   final VoidCallback? onLogout;

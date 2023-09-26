@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:task_manager/components/login_form.dart';
+import 'package:task_manager/presentation/login/components/login_form.dart';
 import 'package:task_manager/core/routes/app_router.gr.dart';
 import 'package:task_manager/core/services/auth/auth_service.dart';
 import 'package:task_manager/core/theme/text_styles.dart';
@@ -11,7 +11,7 @@ import 'package:task_manager/shared_widgets/app_modal.dart';
 import 'package:task_manager/shared_widgets/app_snackbar.dart';
 import 'package:task_manager/shared_widgets/buttons/primary_button.dart';
 
-import '../state/user_state.dart';
+import '../../state/user_state.dart';
 
 @RoutePage()
 class LoginScreen extends StatefulWidget {
@@ -115,17 +115,25 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   void _performLogin(BuildContext context) {
+    final user = User.of(context);
     try {
       state.setLoading(true);
       late final auth = AuthService();
-      auth.signInAnonymously().then((value) {
-        state.setUid(value.user?.uid);
+      auth
+          .signInWithEmailandPassword(
+              username: user.userName, password: user.password)
+          .then((value) {
         state.setLoading(false);
-        appModal(
-          context,
-          onPress: () => context.router
-              .pushAndPopUntil(const HomeRoute(), predicate: (route) => false),
-        );
+        if (value != null) {
+          state.setUid(value.user?.uid);
+          appModal(
+            context,
+            onPress: () => context.router.pushAndPopUntil(const HomeRoute(),
+                predicate: (route) => false),
+          );
+        } else {
+          appSnackBar(context, tetx: 'Invalid login details');
+        }
       });
     } catch (e) {
       state.setLoading(false);

@@ -27,9 +27,6 @@ class LoginForm extends StatelessWidget {
                 if (state.userName.isEmpty) {
                   return 'Username cannot be empty';
                 }
-                if (state.userName.length < 8) {
-                  return 'Username must not be less than 8 characters';
-                }
                 if (!state.userName.contains(RegExp('[A-Za-z]'))) {
                   return 'Username must contain at least one letter';
                 }
@@ -49,9 +46,6 @@ class LoginForm extends StatelessWidget {
                 FilteringTextInputFormatter.deny(RegExp(r"\s"))
               ],
               validator: (p0) {
-                if (state.password.isEmpty) {
-                  return 'Password cannot be empty';
-                }
                 if (state.password.length < 8) {
                   return 'Password must not be less than 8 characters';
                 }

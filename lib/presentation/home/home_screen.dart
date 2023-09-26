@@ -9,14 +9,14 @@ import 'package:task_manager/core/utils/colors.dart';
 import 'package:task_manager/state/fetch_todo.dart';
 import 'package:task_manager/state/user_state.dart';
 
-import '../components/add_task.dart';
-import '../components/homw_app_bar.dart';
-import '../components/todo_page_builder.dart';
-import '../shared_widgets/app_snackbar.dart';
-import '../shared_widgets/buttons/add_task.dart';
+import 'components/add_task.dart';
+import 'components/homw_app_bar.dart';
+import 'components/todo_page_builder.dart';
+import '../../shared_widgets/app_snackbar.dart';
+import '../../shared_widgets/buttons/add_task.dart';
 import 'package:mobx/mobx.dart' as mobx;
 
-import '../shared_widgets/todo_information_widget.dart';
+import '../../shared_widgets/todo_information_widget.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
