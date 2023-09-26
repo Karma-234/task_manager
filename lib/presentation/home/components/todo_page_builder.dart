@@ -30,17 +30,23 @@ class TodoPageBuilder extends StatelessWidget {
             title: list.todos[i].title,
             description: list.todos[i].description,
             isDone: list.todos[i].done ?? false,
-            markDone: () => storageService.updateTodo(
-              payload: list.todos,
-              uid: state.uid ?? '',
-              index: i,
-              onError: (e) => appSnackBar(context, tetx: e),
-            ),
-            delete: () => storageService.deleteTodo(
-              payload: list.todos[i],
-              uid: state.uid ?? '',
-              onError: (e) => appSnackBar(context, tetx: e),
-            ),
+            markDone: () {
+              storageService.updateTodo(
+                payload: list.todos,
+                uid: state.uid ?? '',
+                index: i,
+                onError: (e) => appSnackBar(context, tetx: e),
+              );
+              appSnackBar(context, tetx: 'Task updated successfully!');
+            },
+            delete: () {
+              storageService.deleteTodo(
+                payload: list.todos[i],
+                uid: state.uid ?? '',
+                onError: (e) => appSnackBar(context, tetx: e),
+              );
+              appSnackBar(context, tetx: 'Task deleted successfully!');
+            },
           );
         },
       ),
