@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/theme/text_styles.dart';
-import '../../core/utils/colors.dart';
+import '../../core/theme/colors.dart';
 
 class AppPrimaryButton extends StatelessWidget {
   final Gradient? gradient;

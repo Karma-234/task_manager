@@ -5,7 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:task_manager/core/depedencies/setup.dart';
 import 'package:task_manager/core/services/storage/storage_service.dart';
-import 'package:task_manager/core/utils/colors.dart';
+import 'package:task_manager/core/theme/colors.dart';
 import 'package:task_manager/state/fetch_todo.dart';
 import 'package:task_manager/state/user_state.dart';
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../core/theme/text_styles.dart';
-import '../core/utils/colors.dart';
+import '../core/theme/colors.dart';
 import 'buttons/task_action.dart';
 import 'container/gradient_container.dart';
 

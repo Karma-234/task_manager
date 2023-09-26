@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:task_manager/core/utils/colors.dart';
+import 'package:task_manager/core/theme/colors.dart';
 
 class GradientBorderContainer extends StatelessWidget {
   final Widget child;

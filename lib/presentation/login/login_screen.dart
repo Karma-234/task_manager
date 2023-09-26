@@ -6,7 +6,7 @@ import 'package:task_manager/presentation/login/components/login_form.dart';
 import 'package:task_manager/core/routes/app_router.gr.dart';
 import 'package:task_manager/core/services/auth/auth_service.dart';
 import 'package:task_manager/core/theme/text_styles.dart';
-import 'package:task_manager/core/utils/colors.dart';
+import 'package:task_manager/core/theme/colors.dart';
 import 'package:task_manager/shared_widgets/app_modal.dart';
 import 'package:task_manager/shared_widgets/app_snackbar.dart';
 import 'package:task_manager/shared_widgets/buttons/primary_button.dart';
