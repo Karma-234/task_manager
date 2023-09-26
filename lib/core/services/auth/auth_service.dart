@@ -15,4 +15,6 @@ class AuthService {
       return null;
     }
   }
+
+  logout() async => await _auth.signOut();
 }
